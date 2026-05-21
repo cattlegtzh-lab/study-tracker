@@ -16,69 +16,55 @@ export default function DashboardPage() {
   const fetchRecords = useCallback(async () => {
     const uid = getUserId();
     const startDate = mode === "month" ? subMonths(new Date(), 1).toISOString().slice(0, 10) : "2020-01-01";
-    const { data } = await supabase
-      .from("daily_records")
-      .select("*")
-      .eq("user_id", uid)
-      .gte("date", startDate)
-      .order("date", { ascending: false });
+    const { data } = await supabase.from("daily_records").select("*").eq("user_id", uid).gte("date", startDate).order("date", { ascending: false });
     if (data) setRecords(data);
   }, [mode]);
 
   useEffect(() => { setMounted(true); fetchRecords(); }, [fetchRecords]);
 
-  // Monthly trend (no Recharts needed, pure CSS)
   const monthCounts: Record<string, number> = {};
-  records.forEach((r) => {
-    const m = r.date.slice(0, 7);
-    monthCounts[m] = (monthCounts[m] || 0) + 1;
-  });
-  const trendData = Object.entries(monthCounts)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, count]) => ({ month, count }));
+  records.forEach((r) => { const m = r.date.slice(0, 7); monthCounts[m] = (monthCounts[m] || 0) + 1; });
+  const trendData = Object.entries(monthCounts).sort(([a], [b]) => a.localeCompare(b)).map(([month, count]) => ({ month, count }));
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#6c7086]">学习看板</p>
-        <select value={mode} onChange={(e) => setMode(e.target.value as "month" | "all")} className="text-xs bg-[#313244] rounded px-2 py-1 outline-none">
-          <option value="month">近一个月</option>
-          <option value="all">全部</option>
+        <span className="text-sm text-[#b0a89c]">统计看板</span>
+        <select value={mode} onChange={(e) => setMode(e.target.value as "month" | "all")} className="text-xs bg-white border border-[#f0ebe3] rounded-lg px-2.5 py-1.5 outline-none text-[#555]">
+          <option value="month">近一个月</option><option value="all">全部</option>
         </select>
       </div>
 
-      <p className="text-xs text-[#a6adc8]">总计: {records.length} 条记录</p>
+      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
+        <p className="text-2xl font-semibold text-[#c4a07a]">{records.length}</p>
+        <p className="text-xs text-[#c4b9a8] mt-1">总记录数</p>
+      </div>
 
-      {/* Heatmap */}
-      <div>
-        <h3 className="text-xs font-medium text-[#a6adc8] mb-2">活动热度</h3>
+      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
+        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">活动热度</h3>
         {mounted && <ActivityHeatmap records={records} />}
       </div>
 
-      {/* Domain Distribution */}
-      <div>
-        <h3 className="text-xs font-medium text-[#a6adc8] mb-2">领域分布</h3>
+      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
+        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">领域分布</h3>
         {mounted && <DomainBar records={records} />}
       </div>
 
-      {/* Monthly trend (pure CSS, no Recharts) */}
-      <div>
-        <h3 className="text-xs font-medium text-[#a6adc8] mb-2">月度趋势</h3>
+      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
+        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">月度趋势</h3>
         {trendData.length > 0 ? (
-          <div className="space-y-1">
+          <div className="space-y-2">
             {trendData.map(({ month, count }) => (
-              <div key={month} className="flex items-center gap-2">
-                <span className="text-xs text-[#6c7086] w-16">{month}</span>
-                <div className="flex-1 bg-[#313244] rounded-full h-5 overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (count / Math.max(...trendData.map((t) => t.count))) * 100)}%`, backgroundColor: "#cba6f7" }} />
+              <div key={month} className="flex items-center gap-3">
+                <span className="text-xs text-[#b0a89c] w-20">{month}</span>
+                <div className="flex-1 bg-[#faf8f5] rounded-full h-6 overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (count / Math.max(...trendData.map((t) => t.count))) * 100)}%`, backgroundColor: "#c4a07a", minWidth: count > 0 ? "4px" : "0" }} />
                 </div>
-                <span className="text-xs text-[#cdd6f4]">{count}</span>
+                <span className="text-xs text-[#555] w-6 text-right">{count}</span>
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-xs text-[#6c7086] text-center py-8">暂无数据</p>
-        )}
+        ) : <p className="text-sm text-[#c4b9a8] text-center py-4">暂无数据</p>}
       </div>
     </div>
   );

@@ -1,5 +1,10 @@
 "use client";
-import { type DailyRecord, DOMAIN_COLORS, DOMAINS } from "@/lib/types";
+import { type DailyRecord, DOMAINS } from "@/lib/types";
+
+const domainBarColors: Record<string, string> = {
+  "政经": "#e8b4a2", "西语": "#a2c4e8", "史学": "#e8d4a2",
+  "写作": "#c4a2e8", "RA": "#a2e8c4", "专四": "#e8a2c4", "其他": "#b0a89c",
+};
 import { format, subMonths, eachDayOfInterval, startOfWeek } from "date-fns";
 
 export function DomainBar({ records }: { records: DailyRecord[] }) {
@@ -19,7 +24,7 @@ export function DomainBar({ records }: { records: DailyRecord[] }) {
         <div key={name} className="flex items-center gap-2">
           <span className="text-xs text-[#cdd6f4] w-12 shrink-0">{name}</span>
           <div className="flex-1 bg-[#313244] rounded-full h-4 overflow-hidden">
-            <div className="h-full rounded-full transition-all" style={{ width: `${(count / total) * 100}%`, backgroundColor: DOMAIN_COLORS[name as keyof typeof DOMAIN_COLORS] || "#6b7280" }} />
+            <div className="h-full rounded-full transition-all" style={{ width: `${(count / total) * 100}%`, backgroundColor: domainBarColors[name as keyof typeof domainBarColors] || "#6b7280" }} />
           </div>
           <span className="text-xs text-[#6c7086] w-6 text-right">{count}</span>
         </div>
@@ -50,10 +55,10 @@ export function ActivityHeatmap({ records }: { records: DailyRecord[] }) {
   });
 
   const getColor = (c: number) => {
-    if (c === 0) return "#313244";
-    if (c <= 2) return "#a6e3a1";
-    if (c <= 5) return "#74c7ec";
-    return "#cba6f7";
+    if (c === 0) return "#f0ebe3";
+    if (c <= 2) return "#d4c4a8";
+    if (c <= 5) return "#c4a07a";
+    return "#a07850";
   };
 
   return (
@@ -62,7 +67,7 @@ export function ActivityHeatmap({ records }: { records: DailyRecord[] }) {
         <div className="flex gap-1" style={{ minWidth: "max-content" }}>
           {weeks.map((w, wi) => (
             <div key={wi} className="flex flex-col gap-1">
-              <span className="text-[8px] text-[#6c7086] text-center">{w.label}</span>
+              <span className="text-[8px] text-[#c4b9a8] text-center">{w.label}</span>
               <div className="flex flex-col gap-1">
                 {w.days.map((d) => (
                   <div key={d.date} className="w-3 h-3 rounded-sm" style={{ backgroundColor: getColor(d.count) }} title={`${d.date}: ${d.count}条`} />
@@ -72,9 +77,9 @@ export function ActivityHeatmap({ records }: { records: DailyRecord[] }) {
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-2 text-[10px] text-[#6c7086]">
+      <div className="flex items-center gap-2 mt-2 text-[10px] text-[#c4b9a8]">
         <span>少</span>
-        <div className="w-3 h-3 rounded-sm bg-[#313244]" /><div className="w-3 h-3 rounded-sm bg-[#a6e3a1]" /><div className="w-3 h-3 rounded-sm bg-[#74c7ec]" /><div className="w-3 h-3 rounded-sm bg-[#cba6f7]" />
+        <div className="w-3 h-3 rounded-sm bg-[#f0ebe3]" /><div className="w-3 h-3 rounded-sm bg-[#d4c4a8]" /><div className="w-3 h-3 rounded-sm bg-[#c4a07a]" /><div className="w-3 h-3 rounded-sm bg-[#a07850]" />
         <span>多</span>
       </div>
     </div>
