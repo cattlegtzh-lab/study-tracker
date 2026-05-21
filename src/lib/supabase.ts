@@ -5,12 +5,7 @@ const SANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
 export const supabase = createClient(SURL, SANON);
 
+// 固定用户 ID — 跨设备数据互通。以后如果要分账号，换成 Supabase Auth。
 export function getUserId(): string {
-  if (typeof window === "undefined") return "server";
-  let id = localStorage.getItem("study_tracker_user_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("study_tracker_user_id", id);
-  }
-  return id;
+  return "default";
 }
