@@ -1,5 +1,5 @@
 "use client";
-import { type DailyRecord, DOMAINS } from "@/lib/types";
+import { type Memo, DOMAINS } from "@/lib/types";
 
 const domainBarColors: Record<string, string> = {
   "政经": "#e8b4a2", "西语": "#a2c4e8", "史学": "#e8d4a2",
@@ -7,7 +7,7 @@ const domainBarColors: Record<string, string> = {
 };
 import { format, subMonths, eachDayOfInterval, startOfWeek } from "date-fns";
 
-export function DomainBar({ records }: { records: DailyRecord[] }) {
+export function DomainBar({ records }: { records: Memo[] }) {
   const domainCount: Record<string, number> = {};
   records.forEach((r) => {
     const d = r.domain || "其他";
@@ -33,7 +33,7 @@ export function DomainBar({ records }: { records: DailyRecord[] }) {
   );
 }
 
-export function ActivityHeatmap({ records }: { records: DailyRecord[] }) {
+export function ActivityHeatmap({ records }: { records: Memo[] }) {
   const today = new Date();
   const threeMonthsAgo = subMonths(today, 3);
   const days = eachDayOfInterval({ start: threeMonthsAgo, end: today });

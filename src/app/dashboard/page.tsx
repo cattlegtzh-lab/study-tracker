@@ -2,21 +2,21 @@
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { supabase, getUserId } from "@/lib/supabase";
-import type { DailyRecord } from "@/lib/types";
+import type { Memo } from "@/lib/types";
 import { subMonths } from "date-fns";
 
 const DomainBar = dynamic(() => import("@/components/DashboardCharts").then((m) => m.DomainBar), { ssr: false });
 const ActivityHeatmap = dynamic(() => import("@/components/DashboardCharts").then((m) => m.ActivityHeatmap), { ssr: false });
 
 export default function DashboardPage() {
-  const [records, setRecords] = useState<DailyRecord[]>([]);
+  const [records, setRecords] = useState<Memo[]>([]);
   const [mode, setMode] = useState<"month" | "all">("month");
   const [mounted, setMounted] = useState(false);
 
   const fetchRecords = useCallback(async () => {
     const uid = getUserId();
     const startDate = mode === "month" ? subMonths(new Date(), 1).toISOString().slice(0, 10) : "2020-01-01";
-    const { data } = await supabase.from("daily_records").select("*").eq("user_id", uid).gte("date", startDate).order("date", { ascending: false });
+    const { data } = await supabase.from("memos").select("*").eq("user_id", uid).gte("date", startDate).order("date", { ascending: false });
     if (data) setRecords(data);
   }, [mode]);
 
