@@ -19,7 +19,6 @@ export default function DashboardPage() {
     const { data } = await supabase.from("memos").select("*").eq("user_id", uid).gte("date", startDate).order("date", { ascending: false });
     if (data) setRecords(data);
   }, [mode]);
-
   useEffect(() => { setMounted(true); fetchRecords(); }, [fetchRecords]);
 
   const monthCounts: Record<string, number> = {};
@@ -29,42 +28,42 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-[#b0a89c]">统计看板</span>
-        <select value={mode} onChange={(e) => setMode(e.target.value as "month" | "all")} className="text-xs bg-white border border-[#f0ebe3] rounded-lg px-2.5 py-1.5 outline-none text-[#555]">
+        <span className="text-sm text-zinc-400">统计看板</span>
+        <select value={mode} onChange={(e) => setMode(e.target.value as "month" | "all")} className="text-xs bg-zinc-800 border border-zinc-700 rounded-md px-2.5 py-1.5 outline-none text-zinc-300">
           <option value="month">近一个月</option><option value="all">全部</option>
         </select>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
-        <p className="text-2xl font-semibold text-[#c4a07a]">{records.length}</p>
-        <p className="text-xs text-[#c4b9a8] mt-1">总记录数</p>
+      <div className="bg-zinc-800 rounded-lg border border-zinc-700 p-5">
+        <p className="text-2xl font-semibold text-emerald-400">{records.length}</p>
+        <p className="text-xs text-zinc-500 mt-1">总记录数</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
-        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">活动热度</h3>
+      <div className="bg-zinc-800 rounded-lg border border-zinc-700 p-5">
+        <h3 className="text-xs text-zinc-400 mb-3 font-medium">活动热度</h3>
         {mounted && <ActivityHeatmap records={records} />}
       </div>
 
-      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
-        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">领域分布</h3>
+      <div className="bg-zinc-800 rounded-lg border border-zinc-700 p-5">
+        <h3 className="text-xs text-zinc-400 mb-3 font-medium">领域分布</h3>
         {mounted && <DomainBar records={records} />}
       </div>
 
-      <div className="bg-white rounded-xl border border-[#f0ebe3] shadow-sm p-5">
-        <h3 className="text-xs text-[#b0a89c] mb-3 font-medium">月度趋势</h3>
+      <div className="bg-zinc-800 rounded-lg border border-zinc-700 p-5">
+        <h3 className="text-xs text-zinc-400 mb-3 font-medium">月度趋势</h3>
         {trendData.length > 0 ? (
           <div className="space-y-2">
             {trendData.map(({ month, count }) => (
               <div key={month} className="flex items-center gap-3">
-                <span className="text-xs text-[#b0a89c] w-20">{month}</span>
-                <div className="flex-1 bg-[#faf8f5] rounded-full h-6 overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (count / Math.max(...trendData.map((t) => t.count))) * 100)}%`, backgroundColor: "#c4a07a", minWidth: count > 0 ? "4px" : "0" }} />
+                <span className="text-xs text-zinc-500 w-20">{month}</span>
+                <div className="flex-1 bg-zinc-900 rounded-full h-6 overflow-hidden">
+                  <div className="h-full rounded-full bg-emerald-700/60" style={{ width: `${Math.min(100, (count / Math.max(...trendData.map((t) => t.count))) * 100)}%`, minWidth: count > 0 ? "4px" : "0" }} />
                 </div>
-                <span className="text-xs text-[#555] w-6 text-right">{count}</span>
+                <span className="text-xs text-zinc-300 w-6 text-right">{count}</span>
               </div>
             ))}
           </div>
-        ) : <p className="text-sm text-[#c4b9a8] text-center py-4">暂无数据</p>}
+        ) : <p className="text-sm text-zinc-600 text-center py-4">暂无数据</p>}
       </div>
     </div>
   );

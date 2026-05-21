@@ -2,26 +2,35 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Navbar } from "@/components/Navbar";
+import { Sidebar } from "@/components/Sidebar";
 
-export const metadata: Metadata = {
-  title: "学习追踪",
-  description: "追踪每日学习、想法和项目进度",
-  manifest: "/manifest.json",
-};
+export const metadata: Metadata = { title: "学习追踪", description: "卡片笔记 · 学习追踪", manifest: "/manifest.json" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN">
-      <body className="bg-[#faf8f5] min-h-screen text-[#333]">
-        <div className="max-w-lg mx-auto min-h-screen flex flex-col bg-white shadow-sm">
-          <header className="px-5 py-4 flex items-center justify-between border-b border-[#f0ebe3]">
-            <span className="text-lg font-semibold tracking-tight text-[#c4a07a]">学习追踪</span>
-            <span className="text-xs text-[#b0a89c]">{new Date().toLocaleDateString("zh-CN", { month: "short", day: "numeric", weekday: "short" })}</span>
-          </header>
-          <main className="flex-1 overflow-y-auto px-5 py-4 pb-20">{children}</main>
-          <Navbar />
+    <html lang="zh-CN" className="dark">
+      <body className="bg-zinc-900 min-h-screen text-zinc-100">
+        <div className="flex h-screen overflow-hidden">
+          {/* Sidebar — desktop only */}
+          <Sidebar />
+
+          {/* Main content */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Mobile header */}
+            <header className="md:hidden flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+              <span className="text-sm font-semibold text-zinc-200">学习追踪</span>
+            </header>
+
+            <main className="flex-1 overflow-y-auto">
+              <div className="max-w-2xl mx-auto px-4 py-5 pb-24 md:py-6">{children}</div>
+            </main>
+          </div>
         </div>
-        <Toaster position="top-center" toastOptions={{ style: { background: "#333", color: "#fff", borderRadius: 12, fontSize: 13 } }} />
+
+        {/* Mobile bottom nav */}
+        <div className="md:hidden"><Navbar /></div>
+
+        <Toaster position="top-center" toastOptions={{ style: { background: "#27272a", color: "#e4e4e7", borderRadius: 12, fontSize: 13 } }} />
       </body>
     </html>
   );
